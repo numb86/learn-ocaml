@@ -193,3 +193,71 @@ Error: This expression has type int but an expression was expected of type
          float
 ```
 
+# 第3章　変数の定義
+
+同じ情報を複数の場所に書いていたら、プログラムの構成を見直して、それを避ける。  
+その方法の一つが、変数の利用。
+
+変数の定義方法。  
+変数名の先頭の文字は、アルファベットの小文字でないといけない。
+
+```
+let 変数名 = 式
+```
+
+```ocaml
+# let pi = 3.14 ;;
+val pi : float = 3.14
+# pi ;;
+- : float = 3.14
+# pi *. 2.0 ;;
+- : float = 6.28
+```
+
+関数型言語における変数は、基本的に書き変えることが出来ない。  
+それにより、プログラムの見通しがよくなり、間違いが減り、プログラムの信頼性が高まる。
+
+# 第4章　関数の定義
+
+## 4.2　関数定義の構文
+
+関数名も、変数名と同様にアルファベットの小文字で始まる必要がある。
+
+```
+let 関数名 引数 = 式
+```
+
+```ocaml
+# let f x = x + 10 ;;
+val f : int -> int = <fun>
+# f 3 ;;
+- : int = 13
+```
+
+```ocaml
+# let f x y = x * x + y * y ;;
+val f : int -> int -> int = <fun>
+# f 3 4 ;;
+- : int = 25
+```
+
+```ocaml
+# let greeting name = "Hello, I am " ^ name ^ " !" ;;
+val greeting : string -> string = <fun>
+# greeting "Tom" ;;
+- : string = "Hello, I am Tom !"
+```
+
+```ocaml
+# let hyojun_taiju m = m ** 2.0 *. 2.0 ;;
+val hyojun_taiju : float -> float = <fun>
+# hyojun_taiju 1.75 ;;
+- : float = 6.125
+```
+
+```ocaml
+# let bmi m k = k /. (m ** m) ;;
+val bmi : float -> float -> float = <fun>
+# bmi 1.75 60.0 ;;
+- : float = 22.5338119228526281
+```
