@@ -260,3 +260,68 @@ val bmi : float -> float -> float = <fun>
 # bmi 1.75 60.0 ;;
 - : float = 22.5338119228526281
 ```
+
+## 4.3　関数の型
+
+関数にも、型がある。  
+下記の`f`という関数の型は、`int -> int`。
+
+```ocaml
+# let f x = x * 3 ;;
+val f : int -> int = <fun>
+```
+
+関数の場合は中身は表示されず`<fun>`とだけ表示される。
+
+## 4.4　型推論と型チェック
+
+OCamlは、型についての情報を入力しなくても、型を推論してくれる。  
+また、期待されている正しい型のデータが使われているかチェックしてくれる（型チェック）。  
+これらの特徴により、プログラム中の間違いが減り、プログラムの信頼性が高まる。
+
+```ocaml
+# let f x = x * 3 ;;
+val f : int -> int = <fun>
+# f 4.0 ;;
+Error: This expression has type float but an expression was expected of type
+         int
+```
+
+## 4.5　関数の実行方法
+
+関数を呼び出したときに渡された値を、**実引数**という。
+
+関数は、以下の順番で実行される。
+
+1. 関数呼び出しを、呼び出された関数の中身に置き換える
+2. 置き換えられた関数の中身の引数の部分を、実引数に置き換える
+3. 変数があればそれを中身の値に置き換えていく
+
+例として、`kyuyo`という関数を定義し、その処理の流れを確認する。
+
+```ocaml
+# let jikyu = 900 ;;
+val jikyu : int = 900
+# let kihonkyu = 100 ;;
+val kihonkyu : int = 100
+# let kyuyo hour = kihonkyu + jikyu * hour ;;
+val kyuyo : int -> int = <fun>
+```
+
+上記の後に`kyuyo 8`を実行した場合、以下の流れで処理される。
+
+```
+kyuyo 8
+↓
+kihonkyu + jikyu * hour
+↓
+kihonkyu + jikyu * 8
+↓
+100 + jikyu * 8
+↓
+100 + 900 * 8
+↓
+100 + 7200
+↓
+7300
+```
