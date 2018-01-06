@@ -1,5 +1,4 @@
-浅井健一『プログラミングの基礎』サイエンス社  
-ISBN: 4781911609
+[浅井健一『プログラミングの基礎』サイエンス社](http://www.saiensu.co.jp/?page=book_details&ISBN=ISBN978-4-7819-1160-1&YEAR=2007)
 
 [著者によるサポートページ](http://pllab.is.ocha.ac.jp/~asai/book/Top.html)
 
