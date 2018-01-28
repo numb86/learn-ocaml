@@ -37,7 +37,7 @@ val hyojun_taiju : float -> float = <fun>
 ```
 
 ```ocaml
-# let bmi m k = k /. (m ** m) ;;
+# let bmi m k = k /. (m *. m) ;;
 val bmi : float -> float -> float = <fun>
 # bmi 1.75 60.0 ;;
 - : float = 22.5338119228526281
