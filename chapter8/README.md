@@ -77,3 +77,103 @@ val r : r_t = {a = 1}
 # r.a ;;
 - : int = 1
 ```
+
+
+## 8.6　データ定義に対するデザインレシピ
+
+データの型はプログラムの構造に大きく影響を与える。  
+だから、よく考えてデータの型を定義することが重要である。
+
+ここでは、レコードを扱う関数の作り方を見ていく。
+
+例として、学生のデータを受け取り、そこに成績の情報を付与して返す`hyouka`を作っていく。  
+成績の判定は、80点以上ならA、70点以上ならB、60点以上ならC、60点未満ならD、とする。
+
+まず、入力と出力のデータ構造を考える。  
+既存の型で表現できないなら、自分で定義する。
+
+今回は、学生のデータを表す`gakusei_t`という型を作る。
+
+```ocaml
+(* 学生ひとり分のデータ（名前、点数、成績）を表す型 *)
+type gakusei_t = {
+  namae: string;
+  tensuu: int;
+  seiseki: string;
+}
+```
+
+次に、ヘッダ（関数の目的、型、関数名と引数）を作る。
+
+```ocaml
+(* 目的：学生のデータ gakusei を受け取り、成績を付与して返す *)
+(* hyouka = gakusei_t -> gakusei_t *)
+let hyouka gakusei = {namae = ""; tensuu = 0; seiseki = ""}
+```
+
+次にテスト。
+
+```ocaml
+(* テスト *)
+let test1 = hyouka {namae="tanaka"; tensuu=80; seiseki=""}
+  = {namae="tanaka"; tensuu=80; seiseki="A"}
+let test2 = hyouka {namae="tanaka"; tensuu=70; seiseki=""}
+  = {namae="tanaka"; tensuu=70; seiseki="B"}
+let test3 = hyouka {namae="tanaka"; tensuu=61; seiseki=""}
+  = {namae="tanaka"; tensuu=61; seiseki="C"}
+let test4 = hyouka {namae="tanaka"; tensuu=60; seiseki=""}
+  = {namae="tanaka"; tensuu=60; seiseki="C"}
+let test5 = hyouka {namae="tanaka"; tensuu=59; seiseki=""}
+  = {namae="tanaka"; tensuu=59; seiseki="D"}
+let test6 = hyouka {namae="tanaka"; tensuu=50; seiseki=""}
+  = {namae="tanaka"; tensuu=50; seiseki="D"}
+```
+
+次にテンプレート。  
+入力に`gakusei_t`というレコードを受け取るので、それを取り出す`match`文を挿入する。
+
+```ocaml
+(* 目的：学生のデータ gakusei を受け取り、成績を付与して返す *)
+(* hyouka = gakusei_t -> gakusei_t *)
+let hyouka gakusei = match gakusei with
+  {namae = n; tensuu = t; seiseki = s} ->
+    {namae = ""; tensuu = 0; seiseki = ""}
+```
+
+次に条件分岐。  
+`5.5　条件分岐に対するデザインレシピ`で書いたように、まずは条件分岐だけを書いておき、中身は型だけ合わせておけばよい。
+
+```ocaml
+(* 目的：学生のデータ gakusei を受け取り、成績を付与して返す *)
+(* hyouka = gakusei_t -> gakusei_t *)
+let hyouka gakusei = match gakusei with
+  {namae = n; tensuu = t; seiseki = s} ->
+    if t >= 80 then {namae = ""; tensuu = 0; seiseki = ""}
+    else if t >= 70 then {namae = ""; tensuu = 0; seiseki = ""}
+    else if t >= 60 then {namae = ""; tensuu = 0; seiseki = ""}
+    else {namae = ""; tensuu = 0; seiseki = ""}
+```
+
+最後に本体を完成させ、テストが全て通ることを確認する。
+
+```ocaml
+(* 目的：学生のデータ gakusei を受け取り、成績を付与して返す *)
+(* hyouka = gakusei_t -> gakusei_t *)
+let hyouka gakusei = match gakusei with
+  {namae = n; tensuu = t; seiseki = s} ->
+    if t >= 80 then {namae = n; tensuu = t; seiseki = "A"}
+    else if t >= 70 then {namae = n; tensuu = t; seiseki = "B"}
+    else if t >= 60 then {namae = n; tensuu = t; seiseki = "C"}
+    else {namae = n; tensuu = t; seiseki = "D"}
+```
+
+まとめると、以下のような流れになる。
+
+1. 入出力のデータ構造を考え、必要なら自分で型を定義する
+2. ヘッダを作る
+3. テストを書く
+4. テンプレートを作る
+5. この時点でプログラムを実行し、構文に誤りがないか確認する
+6. 条件分岐を作成
+7. 本体を作成
+8. テストが通ることを確認する
