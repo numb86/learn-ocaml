@@ -177,3 +177,34 @@ let hyouka gakusei = match gakusei with
 6. 条件分岐を作成
 7. 本体を作成
 8. テストが通ることを確認する
+
+# 8.7　駅名と駅間の情報の定義
+
+メトロネットワーク最短経路問題。
+
+駅名の情報を格納するレコード型`ekimei_t`、`ekimei_t`を受け取り文字列として整形して返す関数`hyoji`、駅と駅の接続情報を格納するレコード型`ekikan_t`、を定義した。
+
+```ocaml
+(* 駅名の情報を格納するレコード型 *)
+type ekimei_t = {
+  kanji: string; (* 漢字の駅名 *)
+  kana: string; (* 平仮名の駅名 *)
+  romaji: string; (* ローマ字の駅名 *)
+  shozoku: string; (* 所属する路線名 *)
+}
+
+(* 目的：駅名のデータ ekimei_t を受け取り、駅名の情報を文字列で返す *)
+(* hyoji : ekimei_t -> string *)
+let hyoji ekimei =
+  match ekimei with {kanji = kanji; kana = kana; shozoku = rosenmei}
+  -> rosenmei ^ ", " ^ kanji ^ "（" ^ kana ^ "）"
+
+(* 駅と駅の接続情報を格納するレコード型 *)
+type ekimei_t = {
+  kiten: string; (* 起点の駅名（漢字） *)
+  shuten: string; (* 終点の駅名（漢字） *)
+  keiyu: string; (* 経由する路線名（漢字） *)
+  kyori: float; (* 駅間の距離（km） *)
+  jikan: int; (* 所要時間（分） *)
+}
+```
