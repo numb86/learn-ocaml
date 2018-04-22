@@ -66,3 +66,4 @@ let printer ppf = Format.fprintf ppf "\"%s\"";;
 ## 第7章　[組とパターンマッチ](./chapter7)
 ## 第8章　[レコード](./chapter8)
 ## 第9章　[リスト](./chapter9)
+## 第10章　[再帰関数を使ったプログラミング](./chapter10)
