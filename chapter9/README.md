@@ -179,3 +179,84 @@ let rec contain_zero lst =match lst with
     - 再帰呼び出しを行う場合、ヘッダに書いた目的を使って、再帰呼び出しの意味するところを理解する
     - 出来上がった関数が再帰関数の場合は`let`の後ろに`rec`をつける
 8. テストが通ることを確認する
+
+## 9.6　テンプレートの複合
+
+整数のリストのような単純なリストではなく、ユーザ定義のレコードのリストのように複雑なリストの場合、テンプレートが複雑になる。
+
+例として、`8.6`で定義したレコード型`gakusei_t`のリスト`gakusei_t list`のケースを考えてみる。  
+`gakusei_t list`を受け取り、成績が`A`の人が何人いるかを返す`count_A`という関数を作る。
+
+```ocaml
+(* 学生ひとり分のデータ（名前、点数、成績）を表す型 *)
+type gakusei_t = {
+  namae: string;
+  tensuu: int;
+  seiseki: string;
+}
+```
+
+複雑な型を扱う場合、まずデータの例を作って変数に入れておくと、テストプログラムを書く時などに楽になる。
+
+```ocaml
+(* gakusei_t list 型のデータの例 *)
+let lst1 = []
+let lst2 = [{namae = "山田"; tensuu = 70; seiseki = "B"}]
+let lst3 = [
+  {namae = "山田"; tensuu = 70; seiseki = "B"};
+  {namae = "鈴木"; tensuu = 80; seiseki = "A"}
+]
+let lst4 = [
+  {namae = "鈴木"; tensuu = 80; seiseki = "A"};
+  {namae = "山田"; tensuu = 70; seiseki = "B"};
+  {namae = "高橋"; tensuu = 85; seiseki = "A"}
+]
+```
+
+デザインレシピに従って書いていくと、以下の状態になる。
+
+```ocaml
+(* 目的：学生リスト lst に含まれている成績Aの人数を返す *)
+(* count_A: gakusei_t list -> int *)
+let count_A lst = match lst with
+  [] -> 0
+  | first :: rest -> 0
+```
+
+ここまでは単純なリストのときと同じ。  
+だが今回のケースでは`first`のなかの各フィールドにアクセスしたい。  
+その場合、以下のように`match`文をつなげることでフィールドの値を取得できる。
+
+```ocaml
+let count_A lst = match lst with
+  [] -> 0
+  | first :: rest -> (match first with {namae = n; tensuu = t; seiseki = s} -> 0)
+```
+
+あるいは、パターンの中にパターンを埋め込むという方法もある。  
+今回のケースでは、`first`の部分に`{namae = n; tensuu = t; seiseki = s}`と書く。
+
+```ocaml
+let count_A lst = match lst with
+  [] -> 0
+  | {namae = n; tensuu = t; seiseki = s} :: rest -> 0
+```
+
+この書き方でレコード全体（`first :: rest`の`first`の値）を取得したい場合は、`as`を使う。
+
+```ocaml
+let count_A lst = match lst with
+  [] -> 0
+  | ({namae = n; tensuu = t; seiseki = s} as first) :: rest -> 0
+```
+
+あとは条件分岐を作成し、それから本体を書けば完成。
+
+```ocaml
+(* 目的：学生リスト lst に含まれている成績Aの人数を返す *)
+(* count_A: gakusei_t list -> int *)
+let rec count_A lst = match lst with
+  [] -> 0
+  | {namae = n; tensuu = t; seiseki = s} :: rest
+    -> if s = "A" then 1 + count_A rest else count_A rest
+```
