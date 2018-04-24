@@ -180,6 +180,25 @@ let rec contain_zero lst =match lst with
     - 出来上がった関数が再帰関数の場合は`let`の後ろに`rec`をつける
 8. テストが通ることを確認する
 
+`q-4`の課題として以下のような`length`という関数を作ったが、OCamlには予め`List.length`という関数が用意されている。
+
+```ocaml
+(* 目的：整数のリスト lst を受け取り、その長さを返す *)
+(* length : int list -> int *)
+let rec length lst = match lst with
+  [] -> 0
+  | first :: rest -> 1 + length rest
+```
+
+```ocaml
+# List.length [] ;;
+- : int = 0
+# List.length [2; 1; 2] ;;
+- : int = 3
+# List.length [0] ;;
+- : int = 1
+```
+
 ## 9.6　テンプレートの複合
 
 整数のリストのような単純なリストではなく、ユーザ定義のレコードのリストのように複雑なリストの場合、テンプレートが複雑になる。
