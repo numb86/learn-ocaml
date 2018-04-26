@@ -112,3 +112,34 @@ val x : int = 5
 # max true false ;;
 - : bool = true
 ```
+
+## 10.5　ふたつのリストを結合する関数
+
+`List.append`は、受け取った2つのリストを結合する。  
+省略記法として`@`もある。  
+`リスト @ リスト`とすることで、2つのリストを結合できる。  
+`::`のときは必ず`要素 :: リスト`となったが、`@`では両側にリストが来る。
+
+```ocaml
+# List.append [2] [1; 4] ;;
+- : int list = [2; 1; 4]
+# List.append [] [1; 4] ;;
+- : int list = [1; 4]
+# [2] @ [1; 4] ;;
+- : int list = [2; 1; 4]
+```
+
+## 10.6　ふたつの昇順に並んだリストをマージする関数
+
+引数に複数のリストが与えられ、どちらのリストも再起する可能性がある場合は、組にしてパターンマッチする。
+
+```ocaml
+(* 目的：ふたつのリストを受け取り、それらの長さが同じかを判定する *)
+(* equal_length: 'a list -> 'a list -> bool *)
+let rec equal_length lst1 lst2 = match (lst1, lst2) with
+  ([], []) -> true
+  | ([], first2 :: rest2) -> false
+  | (first1 :: rest1, []) -> false
+  | (first1 :: rest1, first2 :: rest2) ->
+    equal_length rest1 rest2
+```
