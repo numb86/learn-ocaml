@@ -279,3 +279,13 @@ let rec count_A lst = match lst with
   | {namae = n; tensuu = t; seiseki = s} :: rest
     -> if s = "A" then 1 + count_A rest else count_A rest
 ```
+
+## 9.7　駅名リストと駅間リストの整備
+
+メトロネットワーク最短経路問題。
+
+`ekimei_t list`である`global_ekimei_list`と、`ekikan_t`である`global_ekikan_list`を定義した。
+
+駅間については、片方向のデータのみ入っている。
+
+[metro.ml](../metro.ml)として定義してある。
