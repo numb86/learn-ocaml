@@ -200,7 +200,7 @@ let hyoji ekimei =
   -> rosenmei ^ ", " ^ kanji ^ "（" ^ kana ^ "）"
 
 (* 駅と駅の接続情報を格納するレコード型 *)
-type ekimei_t = {
+type ekikan_t = {
   kiten: string; (* 起点の駅名（漢字） *)
   shuten: string; (* 終点の駅名（漢字） *)
   keiyu: string; (* 経由する路線名（漢字） *)
