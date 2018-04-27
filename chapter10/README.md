@@ -143,3 +143,71 @@ let rec equal_length lst1 lst2 = match (lst1, lst2) with
   | (first1 :: rest1, first2 :: rest2) ->
     equal_length rest1 rest2
 ```
+
+## 10.7　駅名・駅間リストからの情報の取得
+
+メトロネットワーク最短経路問題。
+
+必要な関数を定義した。  
+`kyori_wo_hyoji`で使っている`string_of_float`は、実数を文字列に変換する関数。
+
+```ocaml
+# string_of_float ;;
+- : float -> string = <fun>
+# string_of_float 3.0 ;;
+- : string = "3."
+# string_of_float 3.1 ;;
+- : string = "3.1"
+```
+
+```ocaml
+(* 目的：ローマ字の駅名と ekimei_t list を受け取ると、その駅の漢字表記を返す *)
+(* romaji_to_kanji: string -> ekimei_t list -> string *)
+let rec romaji_to_kanji ekimei_romaji lst = match lst with
+  [] -> ""
+  | {romaji = r; kanji = k} :: rest ->
+    if r = ekimei_romaji
+      then k
+      else romaji_to_kanji ekimei_romaji rest
+
+let test1 = romaji_to_kanji "hoge" global_ekimei_list = ""
+let test2 = romaji_to_kanji "yoyogiuehara" global_ekimei_list = "代々木上原"
+let test3 = romaji_to_kanji "yushima" global_ekimei_list = "湯島"
+```
+
+```ocaml
+(* 目的：漢字の駅名をふたつと ekikan_t list を受け取り、駅間の距離を返す *)
+(* get_ekikan_kyori: string -> string -> ekikan_t list -> float *)
+let rec get_ekikan_kyori eki1 eki2 lst = match lst with
+  [] -> infinity
+  | {kiten = ki; shuten = sh; kyori = ky} :: rest ->
+    if (ki = eki1 && sh = eki2) || (ki = eki2 && sh = eki1)
+      then ky
+      else get_ekikan_kyori eki1 eki2 rest
+
+let test1 = get_ekikan_kyori "東京" "表参道" global_ekikan_list = infinity
+let test2 = get_ekikan_kyori "渋谷" "表参道" global_ekikan_list = 1.3
+let test3 = get_ekikan_kyori "表参道" "外苑前" global_ekikan_list = 0.7
+```
+
+```ocaml
+(* 目的：ローマ字の駅名をふたつ受け取り、その距離を整形した文字列で返す *)
+(* kyori_wo_hyoji: string -> string -> string *)
+let kyori_wo_hyoji eki1 eki2 =
+  let eki_kanji1 = romaji_to_kanji eki1 global_ekimei_list in
+  let eki_kanji2 = romaji_to_kanji eki2 global_ekimei_list in
+  if eki_kanji1 = "" then eki1 ^ "という駅は存在しません"
+  else if eki_kanji2 = "" then eki2 ^ "という駅は存在しません"
+  else let ekikan = get_ekikan_kyori eki_kanji1 eki_kanji2 global_ekikan_list in
+    if ekikan = infinity then eki_kanji1 ^ "駅と" ^ eki_kanji2 ^ "駅はつながっていません"
+    else eki_kanji1 ^ "駅から" ^ eki_kanji2 ^ "駅までは" ^ string_of_float ekikan ^ "kmです"
+
+let test1 = kyori_wo_hyoji "hoge" "omotesandou"
+  = "hogeという駅は存在しません"
+let test2 = kyori_wo_hyoji "tokyo" "omotesandou"
+  = "東京駅と表参道駅はつながっていません"
+let test3 = kyori_wo_hyoji "shibuya" "omotesandou"
+  = "渋谷駅から表参道駅までは1.3kmです"
+let test4 = kyori_wo_hyoji "omotesandou" "gaienmae"
+  = "表参道駅から外苑前駅までは0.7kmです"
+```
