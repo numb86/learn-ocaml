@@ -68,3 +68,4 @@ let printer ppf = Format.fprintf ppf "\"%s\"";;
 ## 第9章　[リスト](./chapter9)
 ## 第10章　[再帰関数を使ったプログラミング](./chapter10)
 ## 第11章　[自然数と再帰](./chapter11)
+## 第12章　[ダイクストラのアルゴリズム](./chapter12)
