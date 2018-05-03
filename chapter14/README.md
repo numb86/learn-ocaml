@@ -44,3 +44,54 @@ let test2 = concat ["a"] = "a"
 let test3 = concat ["あ"; "い"] = "あい"
 let test4 = concat ["あ"; ""; "いう"] = "あいう"
 ```
+
+## 14.3　局所関数定義
+
+`10.3`で紹介した局所変数定義のように、関数も局所的に定義できる。
+
+```ocaml
+(* 目的：文字列のリスト lst を受け取り、その要素を前から順に全てつなげた文字列を返す *)
+(* concat: string list -> string *)
+let concat lst = let add str1 str2 = str1 ^ str2 in
+  List.fold_right add lst ""
+```
+
+## 14.4　名前のない関数
+
+関数に名前をつけるのは必須ではない。  
+ただし再帰関数については、名前をつけて定義しなければならない。
+
+名前のない関数（無名関数）は以下のように定義する。
+
+```ocaml
+fun 引数 ... -> 式
+```
+
+```ocaml
+# fun x -> x + x ;;
+- : int -> int = <fun>
+```
+
+その場で引数を渡すと、即時実行される。
+
+```ocaml
+# (fun x -> x + x) 5 ;;
+- : int = 10
+```
+
+無名関数を定義し、それに名前をつける、ということも可能。
+
+```ocaml
+# let double = fun x -> x + x ;;
+val double : int -> int = <fun>
+# double 4 ;;
+- : int = 8
+```
+
+高階関数や無名関数を上手く使うことで、複雑な処理を簡潔に書くことが出来る。
+
+```ocaml
+(* 目的：文字列のリスト lst を受け取り、その要素を前から順に全てつなげた文字列を返す *)
+(* concat: string list -> string *)
+let concat lst = List.fold_right (fun str1 str2 -> str1 ^ str2) lst ""
+```
