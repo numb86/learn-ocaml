@@ -11,7 +11,7 @@ let eki_list = [
 ]
 
 (* 目的：受け取った駅名を始点として扱い初期化を行う *)
-(* shokika: ekimei_t list -> string -> eki_t list *)
+(* shokika: eki_t list -> string -> eki_t list *)
 let rec shokika lst shiten = match lst with
   [] -> []
   | ({namae = n} as first) :: rest ->
