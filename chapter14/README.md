@@ -95,3 +95,58 @@ val double : int -> int = <fun>
 (* concat: string list -> string *)
 let concat lst = List.fold_right (fun str1 str2 -> str1 ^ str2) lst ""
 ```
+
+## 14.5　infix 関数と prefix 関数
+
+関数を先頭に書き、引数をその後ろに書く関数を、`prefix 関数`と呼ぶ。  
+`+`のように関数を引数の間に書く関数を、`infix 関数`と呼ぶ。`+`などの演算子がそれにあたる。  
+ちなみに`::`は構成子と呼ばれるもので、関数ではない。
+
+infix 関数を`()`で括ると、prefix 関数に変換できる。
+
+```ocaml
+# (+) 3 5 ;;
+- : int = 8
+```
+
+高階関数の引数として渡すときに、このテクニックが使える。
+
+```ocaml
+# let sum lst = List.fold_right (+) lst 0 ;;
+val sum : int list -> int = <fun>
+# sum [2; 2; 5; 1] ;;
+- : int = 10
+```
+
+## 14.6　完全数を求める関数
+
+**完全数**とは、自分自身を除く約数の和が、その数自身になる値のこと。  
+例えば`6`。自分自身を除く約数（`1`,`2`,`3`）の和が`6`になる。
+
+この節では完全数を求める関数を作っていく。
+
+まず、約数を求める`divisor`を作る。  
+それに先立ち、`n`から1までのリストを作る`enumerate`を作る。
+
+```ocaml
+(* 目的：n から 1 までの自然数のリストを返す *)
+(* enumerate: int -> int list *)
+let rec enumerate n = if n = 0 then [] else n :: (enumerate (n - 1))
+
+(* 目的：n の約数のリストを返す *)
+(* divisor: int -> int list *)
+let divisor n =
+  List.filter (fun x -> n mod x = 0) (enumerate n)
+```
+
+最後に、与えられた自然数`m`以下の完全数を全て返す`perfect`を作る。
+
+```ocaml
+(* 目的：m 以下の完全数を全て返す *)
+(* perfect: int -> int list *)
+let perfect m =
+  List.filter
+    (fun x -> List.fold_right (+) (divisor x) 0 = x * 2 )
+```
+
+高階関数を使うことで、リストをひとつのデータとして捉え、より抽象度の高い思考が出来るようになる。
