@@ -71,3 +71,4 @@ let printer ppf = Format.fprintf ppf "\"%s\"";;
 ## 第12章　[ダイクストラのアルゴリズム](./chapter12)
 ## 第13章　[一般化と高階関数](./chapter13)
 ## 第14章　[高階関数を使ったリスト処理](./chapter14)
+## 第15章　[新しい形の再帰](./chapter15)
