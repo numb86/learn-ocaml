@@ -145,3 +145,28 @@ let rec sum_tree tree = match tree with
   | Leaf (n) -> n
   | Node (left, n, right) -> n + (sum_tree left) + (sum_tree right)
 ```
+
+## 17.4　2分探索木
+
+木を使った応用として、**2分探索木**がある。  
+2分探索木とは、データに一定の規則を設けることで、探索を高速に行えるようにした2分木のこと。  
+全ての節において以下のふたつの条件を満たしているものが、2分探索木になる。
+
+1. 節の左側の木に格納されている全てのデータは、どれもその節に格納されているデータよりも小さい
+2. 節の右側の木に格納されている全てのデータは、どれもその節に格納されているデータよりも大きい
+
+2分探索を行う`search`を作ってみる。
+
+```ocaml
+(* 目的：2分探索木 tree のなかに data が含まれるかを真偽値で返す *)
+(* search: tree_t -> int -> bool *)
+let rec search tree data = match tree with
+  Empty -> false
+  | Leaf (n) -> n = data
+  | Node (left, n, right) ->
+    if n = data
+      then true
+      else if data > n then search right data else search left data
+```
+
+一般的に、2分探索木を使った探索はリストを使った探索よりも高速になる。
