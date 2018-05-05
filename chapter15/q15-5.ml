@@ -5,14 +5,12 @@
 let saitan_wo_bunri eki_list = match eki_list with 
     [] -> ({namae = ""; saitan_kyori = infinity; temae_list = []}, []) 
   | first :: rest -> 
-      List.fold_right (fun first (p, v) -> 
-			 match (first, p) with 
-			   ({namae = fn; saitan_kyori = fs; temae_list = ft}, 
-			    {namae = sn; saitan_kyori = ss; temae_list = st}) -> 
-			     if fs < ss then (first, p :: v) 
-			     else (p, first :: v)) 
-		      rest 
-		      (first, []) 
+		List.fold_right
+			(fun first (p, v) ->
+				match (first, p) with ({saitan_kyori = fs}, {saitan_kyori = ss}) ->
+					if fs < ss then (first, p :: v) else (p, first :: v))
+			rest
+			(first, [])
 
 (* 駅の例 *) 
 let eki1 = {namae="池袋"; saitan_kyori = infinity; temae_list = []} 
