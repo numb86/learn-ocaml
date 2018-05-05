@@ -74,3 +74,4 @@ let printer ppf = Format.fprintf ppf "\"%s\"";;
 ## 第15章　[新しい形の再帰](./chapter15)
 ## 第16章　[情報の蓄積](./chapter16)
 ## 第17章　[再帰的なデータ構造](./chapter17)
+## 第18章　[例外と例外処理](./chapter18)
