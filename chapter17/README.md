@@ -194,3 +194,68 @@ type 'a tree_t =
 
 再帰的なデータ構造に従った再帰では、停止性は自明である。  
 元のデータの一部に対して再帰呼び出ししている限り、いずれ自己参照していないケースに帰着する。
+
+## 17.7　get_ekikan_kyori の高速化
+
+メトロネットワーク最短経路問題。
+
+ダイクストラのアルゴリズムで頻繁に呼ばれる`get_ekikan_kyori`を高速化することで、全体の高速化を狙う。
+
+```ocaml
+(* 目的：漢字の駅名をふたつと ekikan_t list を受け取り、駅間の距離を返す *)
+(* get_ekikan_kyori: string -> string -> ekikan_t list -> float *)
+let rec get_ekikan_kyori eki1 eki2 lst = match lst with
+  [] -> infinity
+  | {kiten = ki; shuten = sh; kyori = ky} :: rest ->
+    if (ki = eki1 && sh = eki2) || (ki = eki2 && sh = eki1)
+      then ky
+      else get_ekikan_kyori eki1 eki2 rest
+```
+
+この関数では、`lst`の要素を前から順番に見ていく。  
+このような探索を線形探索と呼び、リストの長さに比例する時間がかかる。
+
+そこで、次のように処理することで高速化を図る。
+
+- 駅の探索には、高速アクセスが可能な木を使う
+- その駅に直接つながっている駅の探索には、実装が簡単なリストを使う
+
+「要素がふたつの組」のリストのことを**連想リスト**と呼ぶ。
+
+## 17.8　全通りを尽くしていない場合の対処
+
+`saitan_wo_bunri`は、受け取ったリストが空だった場合、架空の駅を返している。
+
+```ocaml
+(* 目的：eki_t list を受け取り、「最短距離最小の駅」と「それ以外の駅のリスト」の組を返す *)
+(* saitan_wo_bunri: eki_t list -> eki_t * eki_t list *)
+let saitan_wo_bunri eki_list = match eki_list with 
+    [] -> ({namae = ""; saitan_kyori = infinity; temae_list = []}, []) 
+  | first :: rest -> 
+		List.fold_right
+			(fun first (p, v) ->
+				match (first, p) with ({saitan_kyori = fs}, {saitan_kyori = ss}) ->
+					if fs < ss then (first, p :: v) else (p, first :: v))
+			rest
+			(first, [])
+```
+
+しかし全体の構造上、空のリストが渡されることはない。  
+架空の駅を返すのも望ましくないので、空のリストの場合は無視してしまいたい。  
+しかしその場合、OCamlが警告を出してしまう。
+
+そのようなときは、プログラムの構造を変えることで、上手く書けることがある。
+
+今回の例では、引数を2つに分けることでそれを実現している。
+
+```ocaml
+(* 目的：受け取った駅のリストを、最短距離最小の駅とそれ以外に分離する *)
+(* saitan_wo_bunri : eki_t -> eki_t list -> eki_t * eki_t list *)
+let saitan_wo_bunri eki eki_list =
+  List.fold_right
+    (fun first (p, v) ->
+		  match (first, p) with ({saitan_kyori = fs}, {saitan_kyori = ss}) ->
+		    if fs < ss then (first, p :: v) else (p, first :: v))
+		eki_list
+		(eki, [])
+```
