@@ -85,3 +85,63 @@ type tree_t =
 
 `Node`で自己参照している。  
 その一方で`Empty`と`Leaf`は自己参照していないので、これらを種にして木を作っていくことが出来る。
+
+## 17.3　再帰的なデータ構造に対するデザインレシピ
+
+**再帰的なデータ構造に対するデザインレシピ**
+
+- データ定義
+    1. 入出力が再帰的なデータ構造になるときは、まず型を定義する
+    2. 必ず自己参照しないケースがあることを確認する
+    3. テストのためにも、データの例を作成しておく
+- テンプレート
+    1. `match`文を作成する
+    2. 自己参照するケースが再帰呼び出しのケースに対応する
+    3. 再帰呼び出しは自己参照する回数だけ書かれる
+
+例として、木に含まれる全ての整数の和を求める`sum_tree`を作っていく。
+
+データ定義は`17.2`で既に行ったので、例を作る。
+
+```ocaml
+let tree1 = Empty
+let tree2 = Leaf (3)
+let tree3 = Node (tree1, 4, tree2)
+let tree4 = Node (tree2, 5, tree3)
+```
+
+次に、テストとヘッダ。
+
+```ocaml
+(* 目的：木に含まれる全ての整数の和を求める *)
+(* sum_tree: tree_t -> int *)
+let rec sum_tree tree = 0
+
+let test1 = sum_tree tree1 = 0
+let test2 = sum_tree tree2 = 3
+let test3 = sum_tree tree3 = 7
+let test4 = sum_tree tree4 = 15
+```
+
+テンプレート。  
+再帰呼び出しが2回行われることに注目。
+
+```ocaml
+(* 目的：木に含まれる全ての整数の和を求める *)
+(* sum_tree: tree_t -> int *)
+let rec sum_tree tree = match tree with
+  Empty -> 0
+  | Leaf (n) -> 0
+  | Node (left, n, right) -> 0 (* sum_tree left *) (* sum_tree right *)
+```
+
+あとはテストを見ながら、本体を作ればよい。
+
+```ocaml
+(* 目的：木に含まれる全ての整数の和を求める *)
+(* sum_tree: tree_t -> int *)
+let rec sum_tree tree = match tree with
+  Empty -> 0
+  | Leaf (n) -> n
+  | Node (left, n, right) -> n + (sum_tree left) + (sum_tree right)
+```
