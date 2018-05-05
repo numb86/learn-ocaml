@@ -107,3 +107,27 @@ let total_distance lst =
 1. 情報が欠落していることが分かったら、アキュムレータを使って欠落している情報を補う
 2. アキュムレータの働きを目的の次の行に明示する
 3. アキュムレータを使った関数は補助関数として局所的に定義する
+
+## 16.3　アキュムレータの活用
+
+`14.2`で、リストの要素を右から処理していく`fold_right`を紹介したが、逆に左から処理してく`fold_left`もある。  
+`List.fold_left f init lst`のように使い、`fold_right`とは`init`と`lst`の順番が逆であることに注意。
+
+```ocaml
+# List.fold_left ;;
+- : ('a -> 'b -> 'a) -> 'a -> 'b list -> 'a = <fun>
+# List.fold_left (^) "abc" ["1"; "2"] ;;
+- : string = "abc12"
+# List.fold_right (^) ["1"; "2"] "abc" ;;
+- : string = "12abc"
+```
+
+自分で実装すると次のようになるが、`fold_left`における`init`は、その時点までの処理の結果を蓄積しているので、アキュムレータであるといえる。
+
+```ocaml
+(* 目的： init から開始し lst の要素の左から f を実行していく *)
+(* fold_left: ('a -> 'b -> 'a) -> 'a -> 'b list -> 'a *)
+let rec fold_left f init lst = match lst with
+  [] -> init
+  | first :: rest -> fold_left f (f init first) rest
+```
