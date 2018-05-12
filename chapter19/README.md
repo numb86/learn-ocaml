@@ -119,3 +119,52 @@ end = struct
   モジュールの本体
 end
 ```
+
+## 19.6　ファイルの分割と分割コンパイル
+
+モジュールとシグネチャを別々につくり、それをコンパイルして使うという方法もある。  
+モジュールは`tree_c.ml`、シグネチャは`tree_c.mli`として用意した。
+
+そうすると、以下のように定義したのと同じ意味になる。
+
+```ocaml
+module Tree_c : sig
+  tree_c.mli
+end = struct
+  tree_c.ml
+end
+```
+
+`OCamlMakefile`を用意した上で以下の内容の`Makefile`というファイルを作り、このディレクトリで`$ make top`とすると、`my-tree.top`というファイルが生成される。
+
+```
+SOURCES = tree_c.mli tree_c.ml
+RESULT = my-tree
+OCAMLMAKEFILE = ../ocaml-makefile-master/OCamlMakefile
+include $(OCAMLMAKEFILE)
+```
+
+```
+$ make top
+ocamldep tree_c.mli > ._bcdi/tree_c.di
+ocamldep tree_c.ml > ._d/tree_c.d
+ocamlc -c tree_c.mli
+ocamlc -c tree_c.ml
+ocamlmktop \
+				  \
+				               -o my-tree.top \
+				tree_c.cmo
+```
+
+このファイルを実行するとOCamlが起動し、定義したモジュールが使える状態になっている。
+
+```
+$ ./my-tree.top
+        OCaml version 4.06.0
+
+# Tree_c.empty ;;
+- : ('a, 'b) Tree_c.t = <abstr>
+```
+
+`OCamlMakefile`は下記から入手した。  
+https://github.com/mmottl/ocaml-makefile
