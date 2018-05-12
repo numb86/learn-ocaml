@@ -29,3 +29,21 @@ type ('a, 'b) rb_tree_t =
   Empty (* 空の木 *)
   | Node of ('a, 'b) rb_tree_t * 'a * 'b * color_t * ('a, 'b) rb_tree_t  (* 節 *)
 ```
+
+## 20.6　open文
+
+以下のように書くと、いちいち`モジュールの名前.`をつけなくても、そのモジュールで公開している関数などを使えるようになる。
+
+```ocaml
+open モジュールの名前
+```
+
+```ocaml
+(* ここで Tree というモジュールを定義しておく *)
+
+open Tree
+
+(* Tree.empty と書く必要がなくなる *)
+(* val hoge : ('a, 'b) Tree.t = Empty *)
+let hoge = empty
+```
