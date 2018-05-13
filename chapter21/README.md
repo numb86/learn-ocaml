@@ -107,3 +107,30 @@ let _ = main ()
 $ chapter21/fac
 10の階乗は 3628800 です。
 ```
+
+## 21.7　引数の渡し方
+
+`main.ml`を改良して、引数を受け取れるようにする。
+
+`Sys.argv.(n)`で、n番目の引数を受け取ることが出来る。  
+渡される値は文字列なので、整数として扱いときは`int_of_string`を使う。
+
+```ocaml
+(* メイン関数 *)
+(* main: int -> unit *)
+let main n = let kekka = Fac.f n in
+  (
+    print_int n;
+    print_string " の階乗は ";
+    print_int kekka;
+    print_string " です。";
+    print_newline ();
+  )
+
+let _ = main (int_of_string Sys.argv.(1))
+```
+
+```bash
+$ chapter21/fac 5
+5 の階乗は 120 です。
+```
