@@ -1,11 +1,12 @@
 (* メイン関数 *)
-(* main: unit -> unit *)
-let main () = let kekka = Fac.f 10 in
+(* main: int -> unit *)
+let main n = let kekka = Fac.f n in
   (
-    print_string "10の階乗は ";
+    print_int n;
+    print_string " の階乗は ";
     print_int kekka;
     print_string " です。";
     print_newline ();
   )
 
-let _ = main ()
+let _ = main (int_of_string Sys.argv.(1))
