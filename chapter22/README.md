@@ -25,7 +25,11 @@ let rec fib n =
 ```ocaml
 # ref 0 ;;
 - : int ref = {contents = 0}
+# ref "a" ;;
+- : string ref = {contents = "a"}
 ```
+
+型は`'a ref`で、これは参照型と呼ぶ。
 
 値にアクセスするには`!セルの名前`とする。
 
