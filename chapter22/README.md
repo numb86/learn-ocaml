@@ -72,3 +72,46 @@ let rec fib n =
     if n < 2 then n else fib (n - 1) + fib (n - 2)
   )
 ```
+
+## 22.4　参照透過性の喪失
+
+副作用のある関数は冪等性が保たれないため、扱う際には注意が必要。
+
+また、参照型では「値の共有」も行われてしまうため、それにも注意しないといけない。  
+下記の例では、参照型である`hoge`が`lst1`と`lst2`で使われている。  
+そのため`hoge`の値が変わると、両方のリストが影響を受ける。
+
+```ocaml
+# let hoge = ref 1 ;;
+val hoge : int ref = {contents = 1}
+# let lst1 = [hoge] ;;
+val lst1 : int ref list = [{contents = 1}]
+# let lst2 = ref 2 :: lst1 ;;
+val lst2 : int ref list = [{contents = 2}; {contents = 1}]
+# hoge := 5 ;;
+- : unit = ()
+# lst1 ;;
+- : int ref list = [{contents = 5}]
+# lst2 ;;
+- : int ref list = [{contents = 2}; {contents = 5}]
+```
+
+プログラムを書くときは極力、参照透過性が成り立つ型のみを使うようにする。  
+そうすることで複雑性を排除することが出来る。
+
+`List.iter`は、`List.map`のようにリストの各要素に関数を実行していくが、`List.map`と違ってリストを返すのではなく、実行する関数も値を返さない。
+
+```ocaml
+# List.iter ;;
+- : ('a -> unit) -> 'a list -> unit = <fun>
+# let fuga = [ref 1; ref 2] ;;
+val fuga : int ref list = [{contents = 1}; {contents = 2}]
+# let foo = ref 0 :: fuga ;;
+val foo : int ref list = [{contents = 0}; {contents = 1}; {contents = 2}]
+# List.iter (fun x -> x := !x + 1)  foo ;;
+- : unit = ()
+# fuga ;;
+- : int ref list = [{contents = 2}; {contents = 3}]
+# foo ;;
+- : int ref list = [{contents = 1}; {contents = 2}; {contents = 3}]
+```
