@@ -115,3 +115,25 @@ val foo : int ref list = [{contents = 0}; {contents = 1}; {contents = 2}]
 # foo ;;
 - : int ref list = [{contents = 1}; {contents = 2}; {contents = 3}]
 ```
+
+## 22.5　変更可能なレコード
+
+レコードの型を定義する時、フィールド名の前に`mutable`というキーワードをつけると、そのフィールドは変更可能になる。  
+代入文は、`<-`を使う。
+
+以下では`foo_t`というレコード型を定義した際に、`fuga`というフィールドを変更可能にしている。  
+そのため`<-`で代入できる。  
+`hoge`は変更不可能なので、代入しようとするとエラーになる。
+
+```ocaml
+# type foo_t = {hoge : int; mutable fuga : int} ;;
+type foo_t = { hoge : int; mutable fuga : int; }
+# let my_record = {hoge = 3; fuga = 4} ;;
+val my_record : foo_t = {hoge = 3; fuga = 4}
+# my_record.fuga <- 10 ;;
+- : unit = ()
+# my_record ;;
+- : foo_t = {hoge = 3; fuga = 10}
+# my_record.hoge <- 10 ;;
+Error: The record field hoge is not mutable
+```
