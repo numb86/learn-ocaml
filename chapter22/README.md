@@ -137,3 +137,59 @@ val my_record : foo_t = {hoge = 3; fuga = 4}
 # my_record.hoge <- 10 ;;
 Error: The record field hoge is not mutable
 ```
+
+## 22.6　配列
+
+`[| 要素; 要素; ... |]`で配列を作れる。  
+配列の要素は、全て同じ型でないといけない。
+
+要素の型が`'a`のとき、配列の型は`'a array`になる。
+
+```ocaml
+# let a = [|3; 5; 6|] ;;
+val a : int array = [|3; 5; 6|]
+```
+
+`Array.get 配列の名前 添字`もしくは`配列の名前.(添字)`で、要素を取得できる。  
+添字は、`0`から始まる。
+
+```ocaml
+# let a = [|3; 5; 6|] ;;
+val a : int array = [|3; 5; 6|]
+# Array.get a 0 ;;
+- : int = 3
+# a.(0) ;;
+- : int = 3
+# a.(2) ;;
+- : int = 6
+# a.(3) ;;
+Exception: Invalid_argument "index out of bounds".
+```
+
+## 22.7　配列の変更
+
+配列は最初から、全ての要素が変更可能である。
+
+`Array.set 配列の名前 添字 代入する値`もしくは`配列の名前.(添字) <- 代入する値`で変更可能。
+
+```ocaml
+# a ;;
+- : int array = [|3; 5; 6|]
+# Array.set a 1 8 ;;
+- : unit = ()
+# a ;;
+- : int array = [|3; 8; 6|]
+# a.(2) <- 7 ;;
+- : unit = ()
+# a ;;
+- : int array = [|3; 8; 7|]
+```
+
+`Array.length`を使うと、配列の長さを得られる。
+
+```ocaml
+# a ;;
+- : int array = [|3; 8; 7|]
+# Array.length a ;;
+- : int = 3
+```
